@@ -1,10 +1,10 @@
 <template>
-  <div>CreditRisk</div>
+  <div>OverdueCollection</div>
 </template>
 
 <script>
 export default {
-  name: 'CreditRisk',
+  name: 'OverdueCollection',
   data() {
     return {}
   }

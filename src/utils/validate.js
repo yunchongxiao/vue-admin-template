@@ -18,10 +18,10 @@ export function isExternal(path) {
  */
 export function validateUsername(rule, value, callback) {
   const reg = /^\w+$/
-  if (value.length < 4 || value.length > 16) {
-    callback(new Error('用户名长度必须为4-16位'))
-  } else if (!reg.test(value)) {
+  if (!reg.test(value)) {
     callback(new Error('用户名只能包含字母、数字、下划线'))
+  } else if (value.length < 4 || value.length > 16) {
+    callback(new Error('用户名长度必须为4-16位'))
   } else {
     callback()
   }

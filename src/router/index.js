@@ -33,13 +33,13 @@ import Layout from '@/layout'
 export const constantRoutes = [
   {
     path: '/login',
-    component: () => import('@/views/login/index'),
+    component: () => import('@/views/login'),
     hidden: true
   },
 
   {
     path: '/signup',
-    component: () => import('@/views/signup/index'),
+    component: () => import('@/views/signup'),
     hidden: true
   },
 
@@ -56,29 +56,83 @@ export const constantRoutes = [
     children: [{
       path: 'dashboard',
       name: 'Dashboard',
-      component: () => import('@/views/dashboard/index'),
+      component: () => import('@/views/dashboard'),
       meta: { title: 'Dashboard', icon: 'dashboard' }
     }]
   },
 
   {
-    path: '/example',
+    path: '/pre-loan',
     component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: 'Example', icon: 'el-icon-s-help' },
+    redirect: '/pre-loan/blacklist',
+    name: 'preLoan',
+    meta: { title: '贷前准入', icon: 'preloan' },
     children: [
       {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
+        path: 'blacklist',
+        name: 'blacklist',
+        component: () => import('@/views/preLoan/blacklist'),
+        meta: { title: '黑白名单', icon: 'blacklist' }
       },
       {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
+        path: 'credit-risk',
+        name: 'creditRisk',
+        component: () => import('@/views/preLoan/creditRisk'),
+        meta: { title: '信用风险', icon: 'creditrisk' }
+      },
+      {
+        path: 'creditline',
+        name: 'creditline',
+        component: () => import('@/views/preLoan/creditline'),
+        meta: { title: '授信额度', icon: 'yuan' }
+      }
+    ]
+  },
+  {
+    path: '/in-loan',
+    component: Layout,
+    redirect: '/in-loan/data-analysis',
+    name: 'inLoan',
+    meta: { title: '贷中预警', icon: 'inloan' },
+    children: [
+      {
+        path: 'data-analysis',
+        name: 'dataAnalysis',
+        component: () => import('@/views/inLoan/dataAnalysis'),
+        meta: { title: '数据分析', icon: 'linechart' }
+      },
+      {
+        path: 'behavior-track',
+        name: 'behaviortrack',
+        component: () => import('@/views/inLoan/behaviortrack'),
+        meta: { title: '行为追踪', icon: 'track' }
+      },
+      {
+        path: 'creditline-adjust',
+        name: 'creditlineadjust',
+        component: () => import('@/views/inLoan/creditlineadjust'),
+        meta: { title: '调整授信', icon: 'transaction' }
+      }
+    ]
+  },
+  {
+    path: '/post-loan',
+    component: Layout,
+    redirect: '/post-loan/overdue-collection',
+    name: 'postLoan',
+    meta: { title: '贷后管理', icon: 'postloan' },
+    children: [
+      {
+        path: 'overdue-collection',
+        name: 'overdueCollection',
+        component: () => import('@/views/postLoan/overdueCollection'),
+        meta: { title: '逾期催收', icon: 'time' }
+      },
+      {
+        path: 'case-management',
+        name: 'caseManagement',
+        component: () => import('@/views/postLoan/caseManagement'),
+        meta: { title: '案例管理', icon: 'case-archive' }
       }
     ]
   },

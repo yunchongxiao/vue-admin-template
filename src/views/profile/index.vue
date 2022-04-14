@@ -149,4 +149,8 @@ a:hover {
   top: 125px;
 }
 
+li{
+  list-style: none;
+}
+
 </style>

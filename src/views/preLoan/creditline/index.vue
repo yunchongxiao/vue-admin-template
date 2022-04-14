@@ -1,15 +1,13 @@
 <template>
-  <div>CreditRisk</div>
+  <div>CreditLine</div>
 </template>
 
 <script>
 export default {
-  name: 'CreditRisk',
-  data() {
-    return {}
-  }
+  name: 'CreditLine'
 }
 </script>
 
 <style scoped>
+
 </style>
