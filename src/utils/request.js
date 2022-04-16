@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { MessageBox, Message } from 'element-ui'
+import { Message, MessageBox } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 
@@ -15,8 +15,7 @@ const service = axios.create({
 })
 
 // 设置请求拦截器
-service.interceptors.request.use(
-  // 发送请求前的设置
+service.interceptors.request.use(// 发送请求前的设置
   request => {
     // 如果 当前浏览器存在 token，则添加到头部信息中
     if (store.getters.token) {
@@ -25,18 +24,15 @@ service.interceptors.request.use(
       request.headers['X-Token'] = getToken()
     }
     return request
-  },
-  error => {
+  }, error => {
     // 发送请求失败时，在浏览器输出失败原因
     console.log('前端发送请求失败')
     console.log(error)
     return Promise.reject(error)
-  }
-)
+  })
 
 // 设置响应拦截器
-service.interceptors.response.use(
-  /**
+service.interceptors.response.use(/**
    * If you want to get http information such as headers or status
    * Please return  response => response
    */
@@ -45,35 +41,32 @@ service.interceptors.response.use(
    * Determine the request status by custom code
    * Here is just an example
    * You can also judge the status by HTTP Status Code
-   */
-  response => {
+   */response => {
     // 获取响应中携带的 data 数据
     const res = response.data
 
     // 识别响应码是否为 200 （与后端数据一致）
     if (res.code !== 200) {
       Message({
-        message: res.message || 'Error',
-        type: 'error',
-        duration: 5 * 1000
+        message: res.message || 'Error', type: 'error', duration: 5 * 1000
       })
 
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
       if (res.code === 401) {
         // to re-login
         MessageBox.confirm('您已退出登录，您可以留在此页面，或重新登录', '确认退出', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
+          confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
         }).then(() => {
           // 选择确定则清空浏览器token
           store.dispatch('user/resetToken').then(() => {
             // 刷新页面
             location.reload()
           })
+          return Promise.resolve()
+        }).catch(() => {
+          return Promise.reject()
         })
       }
-      return Promise.reject(new Error(res.message || 'Error'))
     } else {
       return res
     }
@@ -81,14 +74,11 @@ service.interceptors.response.use(
 
   // 后端数据响应失败时
   error => {
-    console.log('后端数据响应失败' + error) // for debug
     Message({
-      message: '后端数据响应失败' + error.message,
-      type: 'error',
-      duration: 5 * 1000
+      message: '服务器响应失败，请稍后重试', type: 'error', duration: 5 * 1000
     })
+    console.log(error)
     return Promise.reject(error)
-  }
-)
+  })
 
 export default service

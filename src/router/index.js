@@ -245,6 +245,18 @@ export const constantRoutes = [
       meta: { title: '企业认证', icon: 'dashboard' }
     }]
   },
+  {
+    path: '/test',
+    component: Layout,
+    redirect: 'noRedirect',
+    children: [{
+      path: '/test',
+      name: 'Test',
+      component: () => import('@/views/test'),
+      meta: { title: '测试组件', icon: 'test' }
+    }]
+    // hidden: true
+  },
 
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
