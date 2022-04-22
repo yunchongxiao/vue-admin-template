@@ -12,6 +12,7 @@ export function getInfo(token) {
   return request({
     url: '/user/info',
     method: 'get',
+    params: { token }
   })
 }
 
@@ -27,5 +28,13 @@ export function signup(data) {
     url: '/user/signup',
     method: 'post',
     data
+  })
+}
+
+export function queryUser(data) {
+  return request({
+    url: '/user/query',
+    method: 'get',
+    params: data
   })
 }

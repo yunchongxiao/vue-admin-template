@@ -5,7 +5,7 @@ import { getToken } from '@/utils/auth'
 
 // 创建一个 axios 实例
 const service = axios.create({
-  // baseURL: process.env.VUE_APP_BASE_API + '/vue-admin-template', // url = base url + request url
+  // baseURL: process.env.VUE_APP_BASE_API + '/vue-element-admin', // url = base url + request url
   // baseURL: 'https://www.fastmock.site/mock/f3a0e69c0c13784dd6f8d6bbc62673a3/fastmock', // url = base url + request url
   // 设定 baseURL 为后端接口
   baseURL: 'http://localhost:8080', // url = base url + request url
@@ -32,7 +32,8 @@ service.interceptors.request.use(// 发送请求前的设置
   })
 
 // 设置响应拦截器
-service.interceptors.response.use(/**
+service.interceptors.response.use(
+  /**
    * If you want to get http information such as headers or status
    * Please return  response => response
    */
@@ -41,35 +42,30 @@ service.interceptors.response.use(/**
    * Determine the request status by custom code
    * Here is just an example
    * You can also judge the status by HTTP Status Code
-   */response => {
-    // 获取响应中携带的 data 数据
+   */
+  response => {
+    // 获取响应中携带的数据
     const res = response.data
-
-    // 识别响应码是否为 200 （与后端数据一致）
-    if (res.code !== 200) {
-      Message({
-        message: res.message || 'Error', type: 'error', duration: 5 * 1000
-      })
-
-      // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-      if (res.code === 401) {
-        // to re-login
-        MessageBox.confirm('您已退出登录，您可以留在此页面，或重新登录', '确认退出', {
-          confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
-        }).then(() => {
-          // 选择确定则清空浏览器token
-          store.dispatch('user/resetToken').then(() => {
-            // 刷新页面
-            location.reload()
-          })
-          return Promise.resolve()
-        }).catch(() => {
-          return Promise.reject()
+    console.info(res)
+    const { code, message, data } = res
+    if (code === 200 && message) {
+      Message({ message: message, type: 'success', duration: 2500 })
+    } else if (code === 401) {
+      // 说明用户身份过期
+      MessageBox.confirm('您已退出登录，您可以留在此页面，或重新登录', '确认退出', {
+        confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
+      }).then(() => {
+        // 选择确定则清空浏览器token
+        store.dispatch('user/resetToken').then(() => {
+          // 刷新页面
+          location.reload()
         })
-      }
-    } else {
-      return res
+        return Promise.resolve()
+      }).catch(() => {
+        return Promise.reject()
+      })
     }
+    return res
   },
 
   // 后端数据响应失败时

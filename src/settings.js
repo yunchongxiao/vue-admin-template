@@ -1,6 +1,17 @@
 module.exports = {
+  title: '供应链风控平台',
 
-  title: '供应链金融风控平台',
+  /**
+   * @type {boolean} true | false
+   * @description Whether show the settings right-panel
+   */
+  showSettings: false,
+
+  /**
+   * @type {boolean} true | false
+   * @description Whether need tagsView
+   */
+  tagsView: true,
 
   /**
    * @type {boolean} true | false
@@ -15,8 +26,10 @@ module.exports = {
   sidebarLogo: true,
 
   /**
-   * @type {string }
-   * @description logo
+   * @type {string | array} 'production' | ['production', 'development']
+   * @description Need show err logs component.
+   * The default is only used in the production env
+   * If you want to also use it in dev, you can pass ['production', 'development']
    */
-  logo: 'https://wpimg.wallstcn.com/69a1c46c-eb1c-4b46-8bd4-e9e686ef5251.png'
+  errorLog: 'production'
 }

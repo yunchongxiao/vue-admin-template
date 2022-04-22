@@ -75,7 +75,7 @@
       <div class="tips">
         <div class="tips">
           已有账号？
-          <router-link to="/login" class="link">点此登录</router-link>
+          <el-link href="/#/login" type="primary">点此登录</el-link>
         </div>
       </div>
 
@@ -266,14 +266,6 @@ $light_gray: #eee;
     color: $dark_gray;
     cursor: pointer;
     user-select: none;
-  }
-
-  .link {
-    color: #409eff;
-  }
-
-  .link:hover {
-    color: #66b1ff
   }
 }
 </style>

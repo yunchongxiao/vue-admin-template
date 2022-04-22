@@ -1,18 +1,17 @@
 <template>
   <div class="login-container">
-    <!--   登录框  -->
     <el-form
       ref="loginForm"
       :model="loginForm"
       :rules="loginRules"
       class="login-form"
-      auto-complete="on"
+      autocomplete="on"
       label-position="left"
     >
       <div class="title-container">
         <h3 class="title">用户登录</h3>
       </div>
-      <!--      用户名输入框-->
+
       <el-form-item prop="username">
         <span class="svg-container">
           <svg-icon icon-class="user" />
@@ -20,33 +19,37 @@
         <el-input
           ref="username"
           v-model="loginForm.username"
-          placeholder="用户名"
+          placeholder="请输入用户名"
           name="username"
           type="text"
           tabindex="1"
-          auto-complete="on"
+          autocomplete="on"
         />
       </el-form-item>
 
-      <el-form-item prop="password">
-        <span class="svg-container">
-          <svg-icon icon-class="password" />
-        </span>
-        <el-input
-          :key="passwordType"
-          ref="password"
-          v-model="loginForm.password"
-          :type="passwordType"
-          placeholder="密码"
-          name="password"
-          tabindex="2"
-          auto-complete="on"
-          @keyup.enter.native="handleLogin"
-        />
-        <span class="show-pwd" @click="showPwd">
-          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
-        </span>
-      </el-form-item>
+      <el-tooltip v-model="capsTooltip" content="大写锁定已开启" placement="right" manual>
+        <el-form-item prop="password">
+          <span class="svg-container">
+            <svg-icon icon-class="password" />
+          </span>
+          <el-input
+            :key="passwordType"
+            ref="password"
+            v-model="loginForm.password"
+            :type="passwordType"
+            placeholder="请输入密码"
+            name="password"
+            tabindex="2"
+            autocomplete="on"
+            @keyup.native="checkCapslock"
+            @blur="capsTooltip = false"
+            @keyup.enter.native="handleLogin"
+          />
+          <span class="show-pwd" @click="showPwd">
+            <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+          </span>
+        </el-form-item>
+      </el-tooltip>
 
       <el-button
         :loading="loading"
@@ -55,19 +58,24 @@
         @click.native.prevent="handleLogin"
       >登录
       </el-button>
-
       <div class="tips">
         没有账号？
-        <router-link to="/signup" class="link">点此注册</router-link>
+        <el-link href="/#/signup" type="primary">点此注册</el-link>
       </div>
-
     </el-form>
-  </div>
 
+    <el-dialog title="Or connect with" :visible.sync="showDialog">
+      Can not be simulated on local, so please combine you own business simulation! ! !
+      <br>
+      <br>
+      <br>
+      <social-sign />
+    </el-dialog>
+  </div>
 </template>
 
 <script>
-
+// 引入用户名、密码校验
 import { validatePassword, validateUsername } from '@/utils/validate'
 
 export default {
@@ -79,16 +87,16 @@ export default {
         username: '',
         password: ''
       },
-      // 登录验证法则
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
         password: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
-      // 登录按钮加载图标
-      loading: false,
-      // 密码类型，用来显示或隐藏密码
       passwordType: 'password',
-      redirect: undefined
+      capsTooltip: false,
+      loading: false,
+      showDialog: false,
+      redirect: undefined,
+      otherQuery: {}
     }
   },
   watch: {
@@ -96,39 +104,65 @@ export default {
     $route: {
       // 一旦变化则调用该函数
       handler: function(route) {
-        this.redirect = route.query && route.query.redirect
+        const query = route.query
+        if (query) {
+          this.redirect = query.redirect
+          this.otherQuery = this.getOtherQuery(query)
+        }
       },
       immediate: true
     }
   },
+  mounted() {
+    if (this.loginForm.username === '') {
+      this.$refs.username.focus()
+    } else if (this.loginForm.password === '') {
+      this.$refs.password.focus()
+    }
+  },
   methods: {
-    // 显示密码，点击密码框右侧图标时调用
+    // 确定大小写
+    checkCapslock(e) {
+      const { key } = e
+      this.capsTooltip = key && key.length === 1 && (key >= 'A' && key <= 'Z')
+    },
+    // 显示密码
     showPwd() {
       if (this.passwordType === 'password') {
         this.passwordType = ''
       } else {
         this.passwordType = 'password'
       }
-      // 应该是点击眼睛后自动聚焦到密码框
       this.$nextTick(() => {
         this.$refs.password.focus()
       })
     },
+    // 控制登录
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
-            this.$router.push({ path: this.redirect || '/' })
-            this.loading = false
-          }).catch(() => {
-            this.loading = false
-          })
+          this.$store.dispatch('user/login', this.loginForm)
+            .then(() => {
+              this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+              this.loading = false
+            })
+            .catch(() => {
+              this.loading = false
+            })
         } else {
-          console.log('error submit!!')
+          console.log('表单验证不通过')
           return false
         }
       })
+    },
+    getOtherQuery(query) {
+      return Object.keys(query).reduce((acc, cur) => {
+        if (cur !== 'redirect') {
+          acc[cur] = query[cur]
+        }
+        return acc
+      }, {})
     }
   }
 }
@@ -243,12 +277,16 @@ $light_gray: #eee;
     user-select: none;
   }
 
-  .link {
-    color: #409eff;
+  .thirdparty-button {
+    position: absolute;
+    right: 0;
+    bottom: 6px;
   }
 
-  .link:hover {
-    color: #66b1ff
+  @media only screen and (max-width: 470px) {
+    .thirdparty-button {
+      display: none;
+    }
   }
 }
 </style>

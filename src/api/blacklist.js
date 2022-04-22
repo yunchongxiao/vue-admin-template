@@ -1,21 +1,31 @@
 import request from '@/utils/request'
 
+const BASE_URL = '/pre-loan/blacklist'
 /**
  * 从后端获取黑名单列表
  * @param
  * @returns {*}
  */
-export function fetchList() {
+export function fetchBlacklist(query) {
   return request({
-    url: '/pre-loan/blacklist',
-    method: 'get'
+    url: BASE_URL + '/getlist',
+    method: 'get',
+    params: query
   })
 }
 
-export function deleteList(data) {
+export function deleteBlacklist(data) {
   return request({
-    url: '/pre-loan/deletelist',
+    url: BASE_URL + '/delete',
     method: 'post',
     data
   })
 }
+export function addBlacklist(data) {
+  return request({
+    url: BASE_URL + '/add',
+    method: 'post',
+    data
+  })
+}
+

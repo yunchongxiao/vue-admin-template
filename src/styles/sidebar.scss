@@ -1,6 +1,3 @@
-@import "variables";
-
-
 #app {
 
   .main-container {
@@ -16,7 +13,7 @@
     background-color: $menuBg;
     height: 100%;
     position: fixed;
-    font-size: 0;
+    font-size: 0px;
     top: 0;
     bottom: 0;
     left: 0;
@@ -33,7 +30,7 @@
     }
 
     .el-scrollbar__bar.is-vertical {
-      right: 0;
+      right: 0px;
     }
 
     .el-scrollbar {
@@ -57,7 +54,7 @@
     }
 
     .svg-icon {
-      margin-right: 10px;
+      margin-right: 16px;
     }
 
     .sub-el-icon {
@@ -87,6 +84,7 @@
     & .el-submenu .el-menu-item {
       min-width: $sideBarWidth !important;
       background-color: $subMenuBg !important;
+
       &:hover {
         background-color: $subMenuHover !important;
       }

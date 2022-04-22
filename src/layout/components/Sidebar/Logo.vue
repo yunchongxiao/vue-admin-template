@@ -14,8 +14,6 @@
 </template>
 
 <script>
-const settings = require('@/settings.js')
-
 export default {
   name: 'SidebarLogo',
   props: {
@@ -26,8 +24,8 @@ export default {
   },
   data() {
     return {
-      title: settings.title,
-      logo: settings.logo
+      title: '供应链风控平台',
+      logo: 'https://wpimg.wallstcn.com/69a1c46c-eb1c-4b46-8bd4-e9e686ef5251.png'
     }
   }
 }
@@ -35,7 +33,6 @@ export default {
 
 <style lang="scss" scoped>
 @import "src/styles/variables";
-
 .sidebarLogoFade-enter-active {
   transition: opacity 1.5s;
 }
@@ -62,14 +59,14 @@ export default {
       width: 32px;
       height: 32px;
       vertical-align: middle;
-      margin-left: 12px;
       margin-right: 12px;
+      margin-left: 12px;
     }
 
     & .sidebar-title {
       display: inline-block;
       margin: 0;
-      color: $menuActiveText;
+      color: #fff;
       font-weight: 600;
       line-height: 50px;
       font-size: 14px;
